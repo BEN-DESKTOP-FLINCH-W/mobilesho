@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>mobileshop.com</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="static/webjavascript.js" async=True></script>
+  <script src="static/assistant.js" async=True></script>
+  
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <style>
+    #mycorous{
+      background-color: #FFFFFF;
+    }
+    /* Add a gray background color and some padding to the footer */
+    footer {
+      background-color: #FFFFFF;
+      padding: 25px;
+    }
+    .carousel-inner > .item > img,
+    .carousel-inner > .item > a > img {
+      width: 100%;
+      margin: auto;
+      height: 200px;
+    }
+  </style>
+</head>
+<body id="mycorous">  
+<div class="jumbotron">
+<div class="container">
+    <h2>shop name</h2>
+</div>
+<div class="container" >
+  <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="3000">
+    <!-- Indicators -->
+    <ol class="carousel-indicators">
+      <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+      <li data-target="#myCarousel" data-slide-to="1"></li>
+      <li data-target="#myCarousel" data-slide-to="2"></li>
+      <li data-target="#myCarousel" data-slide-to="3"></li>
+    </ol>
+
+    <!-- Wrapper for slides -->
+    <div class="carousel-inner" role="listbox">
+      <div class="item active">
+        <img src="static\charles-gao-PfAFNYL-qXY-unsplash.jpg" alt="Chania" width="469" height="345">
+      </div>
+
+      <div class="item">
+        <img src="static\eduardo-soares-e4EmPx91Aj4-unsplash.jpg" alt="Chania" width="460" height="345">
+      </div>
+    
+      <div class="item">
+        <img src="static\eduardo-soares-QsYXYSwV3NU-unsplash.jpg" alt="Flower" width="460" height="345">
+      </div>
+
+      <div class="item">
+        <img src="static\eduardo-soares-QsYXYSwV3NU-unsplash.jpg" alt="Flower" width="460" height="345">
+      </div>
+    </div>
+
+    <!-- Left and right controls -->
+    <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+      <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+      <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+      <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+      <span class="sr-only">Next</span>
+    </a>
+  </div>
+</div>
+<div class="container">
+<div class="container text-center">
+    <h2> <span class="glyphicon glyphicon-shopping-cart"></span></h2>
+    </div>
+<form class="form-inline" id="cartitems_form" action="/customerorders" method="POST">
+    <div class="cart-items">      
+        <table class="table table-borderless" >
+        <thead>
+            <tr>
+            <th class="col-20">ITEM</th>
+            <th class="col-20">QUANTITY</th>
+            <th class="col-20">PRICE(ksh)</th>
+            </tr>
+        </thead>
+        <tbody class="cart-table">
+            <tr class="cart-item-row">
+            
+            </tr>
+        </tbody>
+        </table>
+        <div class="row" style="background-color:#FFFFFF;">
+            <div class="col-xs-3">TOTAL PRICE(KSH)</div>
+            <div class="col-xs-5"><input type="number" id="customer_total" name="customer_total" class="form-control mb-2 mr-sm-2" value="470" readonly></div>
+            <div class="col-xs-4"></div>
+        </div>
+        <div class="row" style="background-color:#FFFFFF;">
+           <div class="col-xs-8">
+            <label for="fname">email:</label>
+            <input type="email" id="uname" name="uname" class="form-control mb-2 mr-sm-2">
+          </div>
+          <div class="col-xs-4"><input type="submit" value="SUBMIT" id="submitcustomers" class="btn btn-success" /></div>
+      </div>
+        </form>
+  </div>
+</div>
+<div class="container">
+    <h2>Shop Products</h2>
+    <ul class="nav nav-tabs">
+      {% for category in range(categories|length) %} 
+      
+      <li ><a data-toggle="tab" href="#{{categories[category][0]}}"> <button type="button" class="btn btn-primary">{{categories[category][0]}}</button></a></li>
+      
+      {% endfor %}
+    </ul>
+    
+    <div class="tab-content">
+      {% for category in range(categories|length) %} 
+        <div id="{{categories[category][0]}}" class=" tab-pane fade shop-items " style="overflow-y: scroll; height: 200px;">
+  
+            <table class="table table-borderless">
+            <thead>
+              <tr>
+                <th>ITEM</th>
+                <th>UNIT PRICE (ksh)</th>
+              </tr>
+            </thead>
+            <tbody>
+              
+              {% for stock in mycustomers[category] %}
+              <tr class="item-row">
+              
+                <td class="item-title">{{stock[0]}}</td>
+                <td class="item-price">{{stock[1]}}</td>
+                <td><button class="add-to-cart" type="button">select</button></td>
+              </tr>
+              {% endfor %}
+              
+            </tbody>
+            </table>
+            
+            
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  
+<footer class="container-fluid text-center">
+  <p>SELF SERVICE</p>
+</footer>
+
+<script>
+  // Used to toggle the menu on small screens when clicking on the menu button
+  function myFunction() {
+    var x = document.getElementById("navDemo");
+    if (x.className.indexOf("w3-show") == -1) {
+      x.className += " w3-show";
+    } else { 
+      x.className = x.className.replace(" w3-show", "");
+    }
+  }
+  </script>
+
+</body>
+</html>
