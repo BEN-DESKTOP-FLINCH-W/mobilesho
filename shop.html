@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>  
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script src="static/assistant.js" async=True></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+
+
+<style>
+  #categories{
+    list-style: none;
+  }
+  
+  #categories li::before {
+    content: "\2022";
+    color: red;
+    font-weight: bold;
+    display: inline-block; 
+    width: 1em;
+    margin-left: -1em;
+  }
+.myconts {
+    height: 150px;
+}
+body {
+  font-family: "Lato", sans-serif;
+  transition: background-color .5s;
+}
+
+.sidenav {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #111;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 60px;
+}
+
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+#main {
+  transition: margin-left .5s;
+  padding: 16px;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+</style>
+</head>
+<body id="shopowner">
+
+<div class="container">
+    <ul class="nav nav-tabs">
+  <li>
+  <div id="mySidenav" class="sidenav">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+  <h3 class="text-center text-primary"><span class="glyphicon glyphicon-phone"></span>MSASST</h3>
+  <a href="/shop"><span class="glyphicon glyphicon-dashboard"></span>Dashboard</a>
+  <a data-toggle="tab" href="#menu6"><span class="glyphicon glyphicon-book"></span>Stocks</a>
+  <a data-toggle="tab" href="#menu8"><span class="glyphicon glyphicon-check"></span>Orders</a>
+  <a data-toggle="tab" href="#menu4"><span class="glyphicon glyphicon-plus"></span>Add Product</a>
+  <a data-toggle="tab" href="#menu7"><span class="glyphicon glyphicon-tasks"></span>Categories</a>
+  <a data-toggle="tab" href="#menu3"><span class="glyphicon glyphicon-gift"></span>Discounts</a>
+  <a data-toggle="tab" href="#menu9"><span class="glyphicon glyphicon-stats"></span>Analysis</a>
+</div>
+
+<div id="main">
+  <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; shop name</span>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="myconts bg-primary text-white">
+                <h4 style="padding:70px">Stocked Products<a href="#">
+                    <span class="glyphicon glyphicon-circle-arrow-right"></span>
+                  </a></h4>
+
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="myconts bg-primary text-white">
+                <h4 style="padding:70px">All Orders<a href="#">
+                    <span class="glyphicon glyphicon-circle-arrow-right"></span>
+                  </a></h4>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="myconts bg-primary text-white">
+                <h4 style="padding:70px">Analysis<a href="#">
+                    <span class="glyphicon glyphicon-circle-arrow-right"></span>
+                  </a></h4>
+            </div>
+        </div>
+      </div>
+      </div>
+      </li>
+
+      <li class="active"><a data-toggle="tab" href="#menu">Recent Orders</a></li>
+      <li><a data-toggle="tab" href="#menu2"><span class="glyphicon glyphicon-qrcode"></span> QR Code</a></li>
+      <li><a data-toggle="tab" href="#menu3">Discounts</a></li>
+      <li><a data-toggle="tab" href="#menu4"><span class="glyphicon glyphicon-plus"></span>Add Product</a></li>
+      <li><a data-toggle="tab" href="#menu6">Products</a></li>
+      <li><a data-toggle="tab" href="#menu7">Categories</a></li>
+      <li><a data-toggle="tab" href="#menu8">Orders</a></li>
+      <li><a data-toggle="tab" href="#menu9"><span class="glyphicon glyphicon-signal"></span> Shop analysis</a></li>
+    </ul>
+  
+    <div class="tab-content">
+        <div id="menu" class="container tab-pane fade in active">  
+            <table class="table">
+              <thead class="thead-dark">
+                <tr>
+                  <th>Order ID</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for orders in incomplete %}
+                
+                <form action="/complete" method="POST" id="complete_order_form" >
+                <tr>
+                  <td><input id="order_complete_id" name="order_complete_id" class="form-control mb-2 mr-sm-2 cart-item title" value="{{orders[0]}}"readonly></td>
+                  <td><input id="order_complete_total" name="order_complete_total" class="form-control mb-2 mr-sm-2 cart-item title" value="{{orders[1]}}"readonly></td>
+                  <td><button type="submit"class="btn btn-primary mb-2" id="submit_complete">complete</button></td>
+                  <td><button type="submit"class="btn btn-danger mb-2" id="submit_complete">cancel</button></td>
+                </tr>
+              </form>
+              {% endfor %}
+              
+              </tbody>
+            </table>
+        </div>
+        <div id="menu2" class=" tab-pane fade">           
+            
+        </div>
+        <div id="menu3" class=" tab-pane fade">  
+          <div class="container">
+            <h4>Add Deals&discounts</h4>
+            <form id="discounts_form" class="form-inline" action="/discounts" method="POST">
+              <label for="prodctname" class="mb-2 mr-sm-2">Product:</label>
+              <input type="text" class="form-control mb-2 mr-sm-2" id="prodctname" placeholder="product name" name="dscprod">
+              <label for="startdate" class="mb-2 mr-sm-2">Start date:</label>
+              <input type="date" class="form-control mb-2 mr-sm-2" id="startdate" placeholder="enter date" name="start_date"> 
+              <label for="enddate" class="mb-2 mr-sm-2">End date:</label>
+              <input type="date" class="form-control mb-2 mr-sm-2" id="enddate" placeholder="enter date" name="end_date">   
+              <button type="submit" class="btn btn-primary mb-2" id="0">Submit</button>
+            </form>
+            <h4>Available Discounts</h4>
+            <table class="table">
+              <thead >
+                <tr>
+                  <th>Product</th>
+                  <th>Start Date</th>
+                  <th>End Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for product in mydiscount %}
+                <tr>
+                    {% for item in product %}
+                    <td>{{item}}</td>
+    
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          
+        </div>
+        <div id="menu4" class=" tab-pane fade"> 
+            <style>
+                * {
+                  box-sizing: border-box;
+                }
+                
+                input[type=text], select, textarea {
+                  width: 100%;
+                  padding: 12px;
+                  border: 1px solid #ccc;
+                  border-radius: 4px;
+                  resize: vertical;
+                }
+                
+                label {
+                  padding: 12px 12px 12px 0;
+                  display: inline-block;
+                }
+                
+                input[type=submit] {
+                  background-color: #04AA6D;
+                  color: white;
+                  padding: 12px 20px;
+                  border: none;
+                  border-radius: 4px;
+                  cursor: pointer;
+                  float: right;
+                }
+                
+                input[type=submit]:hover {
+                  background-color: #45a049;
+                }
+                
+                .container {
+                  border-radius: 5px;
+                  background-color: #f2f2f2;
+                  padding: 20px;
+                }
+                
+                .col-25 {
+                  float: left;
+                  width: 25%;
+                  margin-top: 6px;
+                }
+                
+                .col-75 {
+                  float: left;
+                  width: 75%;
+                  margin-top: 6px;
+                }
+                
+                /* Clear floats after the columns */
+                .row:after {
+                  content: "";
+                  display: table;
+                  clear: both;
+                }
+                
+                /* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
+                @media screen and (max-width: 600px) {
+                  .col-25, .col-75, input[type=submit] {
+                    width: 100%;
+                    margin-top: 0;
+                  }
+                }
+                </style>      
+            <div class="container">
+                <form action="/insert" method="POST" id="insert_form">
+                  <div class="row">
+                    <div class="col-25">
+                      <label for="pname">Product Name</label>
+                    </div>
+                    <div class="col-75">
+                      <input type="text" id="pname" name="newproduct" placeholder="product">
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-25">
+                      <label for="pqty">Quantity</label>
+                    </div>
+                    <div class="col-75">
+                      <input type="number" id="pqty" name="newprdqty" placeholder="Quantity">
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-25">
+                      <label for="prdctg">Category</label>
+                    </div>
+                    <div class="col-75">
+                      <select id="prdctg" name="newcategory">
+                        {% for category in categories %}
+                        {% for item in category %}
+                        <option value={{item}}>{{item}}</option>
+                        {% endfor %}
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-25">
+                      <label for="prdprice">Price</label>
+                    </div>
+                    <div class="col-75">
+                      <input id="prdprice" name="newprice" placeholder="selling at.."></input>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <input type="submit" value="Submit" id="insert">
+                  </div>
+                </form>
+              </div>
+        </div>
+        <div id="menu5" class=" tab-pane fade">           
+            
+        </div>
+        <div id="menu6" class=" tab-pane fade shop-items">                     
+            <table class="table table-borderless" id="products">
+            <thead>
+              <tr>
+                <th>ITEM ID</th>
+                <th>ITEM</th>
+                <th>QUANTITY IN STOCK</th>
+                <th>SELLING PRICE (ksh)</th>
+                <th>Category</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for stock in mystock %}
+                <tr>
+                    
+                    <td>{{stock[0]}}</td>
+                    <td>{{stock[1]}}</td>
+                    <td>{{stock[2]}}</td>
+                    <td>{{stock[3]}}</td>
+                    <td>{{stock[4]}}</td>
+                    <td>
+                      <a href="/update/{{stock[0]}}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#modaledit{{stock[0]}}">Edit</a>
+                      <a href="/delete/{{stock[0]}}" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#modaldelete{{stock[0]}}">Delete</a>
+                    </td>    
+                </tr>
+                <div id="modaledit{{stock[0]}}" class="modal fade" role="dialog">
+                  <div class="modal-dialog">
+                
+                
+                     <div class="modal-content">
+                
+                
+                        <div class="modal-header">
+                
+                
+                           <h4 class="modal-title">Update Information</h4>
+                
+                
+                        </div>
+                
+                
+                        <div class="modal-body">
+                
+                
+                           <form action="{{url_for('update')}}" method="POST" id="updateproducts">
+                
+                
+                              <div class="form-group">
+                
+                
+                                 <label>Product Name:</label>
+                                  <input type="hidden"  name="productid" value="{{stock[0]}}">
+                
+                                 <input type="text" class="form-control" name="updatename" value="{{stock[1]}}">
+                
+                
+                              </div>
+                
+                
+                
+                              <div class="form-group">
+                
+                
+                                 <label>Quantity:</label>
+                
+                                 <input type="text" class="form-control" name="updateqty" value="{{stock[2]}}">
+                
+                
+                              </div>
+                
+                
+                              <div class="form-group">
+                
+                
+                                 <label>selling price:</label>
+                
+                                 <input type="text" class="form-control" name="updateselling" value="{{stock[3]}}">
+                
+                
+                              </div>
+                              <div class="form-group">
+                
+                
+                                <label>Category:</label>
+               
+                                <input type="text" class="form-control" name="phone" value="{{stock[4]}}" readonly>
+               
+               
+                             </div>
+                
+                
+                              <div class="form-group">
+                
+                
+                                 <button class="btn btn-primary" type="submit" id="submit_update">Update</button>
+                
+                
+                              </div>
+                
+                
+                           </form>
+                
+                
+                        </div>
+                
+                
+                        <div class="modal-footer">
+                
+                
+                           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                
+                
+                        </div>
+                
+                
+                     </div>
+                
+                
+                  </div>
+                
+               </div>
+               <div id="modaldelete{{stock[0]}}" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+              
+              
+                   <div class="modal-content">
+              
+              
+                      <div class="modal-header">
+              
+              
+                         <h4 class="modal-title">Delete product</h4>
+              
+              
+                      </div>
+              
+              
+                      <div class="modal-body">
+              
+              
+                         <form action="{{url_for('delete')}}" method="POST" id="deleteproduct">
+              
+              
+                            <div class="form-group">
+              
+              
+                               <label>Product Name:</label>
+                                <input type="hidden"  name="productdeleteid" value="{{stock[0]}}">
+              
+                               <input type="text" class="form-control" name="deletename" value="{{stock[1]}}">
+              
+              
+                            </div>
+              
+              
+              
+                            <div class="form-group">
+              
+              
+                               <button class="btn btn-danger" type="submit" id="submit_delete">Confirm Delete</button>
+              
+              
+                            </div>
+              
+              
+                         </form>
+              
+              
+                      </div>
+              
+              
+                      <div class="modal-footer">
+              
+              
+                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              
+              
+                      </div>
+              
+              
+                   </div>
+              
+              
+                </div>
+              
+             </div>
+              
+              
+                
+                {% endfor %}
+              
+            </tbody>
+            </table>
+    
+        </div>
+        <div id="menu7" class=" tab-pane fade"> 
+          <div class="container">
+            
+            <button type="button" class="btn btn-success btn-medium" data-toggle="modal" data-target="#addcategory">Add category</button>
+          
+            <!-- Modal -->
+            <div class="modal fade" id="addcategory" role="dialog">
+              <div class="modal-dialog">
+              
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Add new category</h4>
+                  </div>
+                  <div class="modal-body">
+                    <form action="{{url_for('addcategory')}}"" method="POST" id="category_add">
+                      <div class="form-group">
+                         <label>Category Name:</label>
+                          
+                         <input type="text" class="form-control" id="category_add_name" name="category_add_name">
+                      </div>
+                      <div class="form-group">
+                         <button class="btn btn-primary" type="submit" id="submit_add_category">Add</button>
+                      </div>
+                   </form>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  </div>
+                </div>
+                
+              </div>
+            </div>
+            
+          </div>
+          
+          <table class="table table-borderless">
+            
+            <thead>
+              <tr>
+                <th>Products Categories</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for category in categories %}
+              <tr class="category-row">
+              
+                <td class="orddate">{{category[0]}}</td>
+                <td >
+                  <a href="/categoryedit/{{category[0]}}" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#modalcategory{{category[0]}}">Edit</a>
+                  <a href="/categorydelete/{{category[0]}}" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#modalcategorydelete{{category[0]}}">Delete</a>
+                   
+                </td>
+                
+              </tr>
+              <div id="modalcategory{{category[0]}}" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                   <div class="modal-content">
+                      <div class="modal-header">
+                         <h4 class="modal-title">Edit category Name</h4>
+                      </div>
+                      <div class="modal-body">
+                         <form action="{{url_for('categoryedit')}}" method="POST" id="categoryedit_form">
+                            <div class="form-group">
+                               <label>Category Name:</label>
+                                <input type="hidden"  name="categorynameid" value="{{category[0]}}">
+                               <input type="text" class="form-control" name="categoryname" value="{{category[0]}}">
+                            </div>
+                            <div class="form-group">
+                               <button class="btn btn-primary" type="submit" id="submit_editcategory">update</button>
+                            </div>
+                         </form>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                     </div>
+                    </div>
+                    </div>
+
+
+                    <div class="modal fade" id="modalcategorydelete{{category[0]}}" role="dialog">
+                      <div class="modal-dialog">
+                      
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title">Add new category</h4>
+                          </div>
+                          <div class="modal-body">
+                            <form action="{{url_for('addcategory')}}" method="POST" id="category_add">
+                              <div class="form-group">
+                                 <label>Category Name:</label>
+                                  
+                                 <input type="text" class="form-control" id="category_add_name" name="category_add_name">
+                              </div>
+                              <div class="form-group">
+                                 <button class="btn btn-primary" type="submit" id="submit_add_category">Add</button>
+                              </div>
+                           </form>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                          </div>
+                        </div>
+                        
+                      </div>
+                    </div>
+                    
+                  </div>
+                  
+              {% endfor %}
+              
+            </tbody>
+            </table>          
+            
+        </div>
+        <div id="menu8" class=" tab-pane fade shop-items">                     
+            <table class="table table-borderless">
+            <thead>
+              <tr>
+                <th>DATE</th>
+                <th>ORDER NUMBER</th>
+                <th>PRODUCT ID</th>
+                <th>PRODUCT NAME</th>
+                <th>QUANTITY</th>
+                <th>PRICE</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for order in myorders %}
+              <tr class="item-row">
+              
+                <td class="orddate">{{order[0]}}</td>
+                <td class="ordno">{{order[1]}}</td>
+                <td class="ordid">{{order[2]}}</td>
+                <td class="prodname">{{order[3]}}</td>
+                <td class="prodqty">{{order[4]}}</td>
+                <td class="prodprce">{{order[5]}}</td>
+              </tr>
+              {% endfor %}
+              
+            </tbody>
+            </table>
+        </div>
+        <div id="menu9" class=" tab-pane fade"> 
+          <table class="table table-borderless">
+            <tr>
+              
+              <th>Category</th>
+              <th>Total Sales</th>
+            </tr>
+            
+            <tbody>
+              {% for category in shopanalysis %}
+              <tr>
+                <td>{{category[1]}}</td>
+                <td>{{category[0]}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>          
+          <div>
+          </div>
+          <canvas id="linechart" style="padding: 75px 50px 75px 100px" style="margin: 25px 50px 75px 100px"></canvas>
+          <script>
+          new Chart("linechart",{
+              type:"bar",
+              data:{
+                  labels: {{ labels | safe}},
+                  datasets:[
+                      {
+                          label: "SALE OF PRODUCTS",
+                          data: {{ values | safe}},
+                          fill: false,
+                          backgroundColor: "#00aba9",
+                          lineTension: 0.1
+          
+                      }
+                  ]
+              },
+              options: {
+                  
+              }
+          });
+          </script>
+          
+          <script>
+          // Used to toggle the menu on small screens when clicking on the menu button
+          function myFunction() {
+            var x = document.getElementById("navDemo");
+            if (x.className.indexOf("w3-show") == -1) {
+              x.className += " w3-show";
+            } else { 
+              x.className = x.className.replace(" w3-show", "");
+            }
+          }
+          </script>
+          
+        </div>
+  </div>
+
+<script>
+function openNav() {
+  document.getElementById("mySidenav").style.width = "250px";
+  document.getElementById("main").style.marginLeft = "250px";
+  document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
+}
+
+function closeNav() {
+  document.getElementById("mySidenav").style.width = "0";
+  document.getElementById("main").style.marginLeft= "0";
+  document.body.style.backgroundColor = "white";
+}
+</script>
+
+
+   
+</body>
+</html> 
